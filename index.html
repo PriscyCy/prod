@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productivity Timer</title>
+    <link rel="icon" type="jpeg" href="icon.jpeg">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background">
+        <div class="header">
+            <h1 id="header">PriVest Productivity Timer</h1>
+            <p id="header1">Your Focus Is</p>
+            <p id="header1">Just A Timer Away! </p>
+        </div>
+
+        <div class="circular-timer">
+            <div class="circle">
+                <div class="timer-text" id="timer-text">00:00:00</div>
+            </div>
+        </div>
+
+        <div class="timecont">
+            <div class="hrs">
+                <span>Hours</span>
+                <select id="hours"></select>
+            </div>
+            <div class="min">
+                <span>Minutes</span>
+                <select id="minutes"></select>
+            </div>
+            <div class="sec">
+                <span>Seconds</span>
+                <select id="seconds"></select>
+            </div>
+        </div>
+
+        <div class="btn">
+            <button id="start">Start</button>
+            <button id="pause">Pause</button>
+            <button id="resume">Resume</button>
+            <button id="reset">Reset</button>
+        </div>
+    </div>
+    <audio  id="timer-audio" src="audio11.mp3" preload=""></audio> 
+    <script src="index.js"></script>
+</body>
+</html>
