@@ -57,7 +57,7 @@ function startTimer() {
 
             alert("Time's up!");
 
-            // **Stop the audio after alert is dismissed**
+         // **Stop the audio after alert is dismissed**
             timerAudio.pause(); 
             timerAudio.currentTime = 0;
             return;
@@ -88,33 +88,44 @@ function pauseTimer() {
     clearInterval(countdownInterval);
 }
 
-// **Resume the timer**
 function resumeTimer() {
     if (countdownInterval) clearInterval(countdownInterval); // Clear any existing interval
-    
+
+    // Check if the timer has already ended
+    if (elapsedSeconds >= totalTimeInSeconds) {
+        const timerAudio = document.getElementById("timer-audio");
+        timerAudio.loop = true; // Set loop for the audio
+        timerAudio.play()
+            .then(() => console.log("Audio is playing and looping"))
+            .catch((error) => console.error("Audio play failed:", error));
+
+        alert("Time's up!");
+
+        // Stop the audio after alert is dismissed
+        timerAudio.pause(); 
+        timerAudio.currentTime = 0;
+        return;
+    }
+
     countdownInterval = setInterval(() => {
         if (elapsedSeconds >= totalTimeInSeconds) {
             clearInterval(countdownInterval);
 
             const timerAudio = document.getElementById("timer-audio");
+            timerAudio.loop = true; // Set loop with delay
+            console.log("Loop is set to:", timerAudio.loop);
+            timerAudio.play()
+                .then(() => console.log("Audio is playing and looping"))
+                .catch((error) => console.error("Audio play failed:", error));
 
-            setTimeout(() => {
-                timerAudio.loop = true; // Set loop with delay
-                console.log("Loop is set to:", timerAudio.loop);
-                timerAudio.play()
-                    .then(() => console.log("Audio is playing and looping"))
-                    .catch((error) => console.error("Audio play failed:", error));
-            }, 100); // Delay to ensure loop is set before play
-            
+            alert("Time's up!");
 
-          // Stop the audio after alert is dismissed
-           timerAudio.pause(); 
-           timerAudio.currentTime = 0;
-           return;
+            // Stop the audio after alert is dismissed
+            timerAudio.pause(); 
+            timerAudio.currentTime = 0;
+            return;
         }
-    
-          
-        
+
         elapsedSeconds++;
         const remainingSeconds = totalTimeInSeconds - elapsedSeconds;
 
@@ -129,7 +140,6 @@ function resumeTimer() {
         updateCircleProgress(remainingSeconds, totalTimeInSeconds);
     }, 1000);
 }
-
 // Reset the timer
 function resetTimer() {
     clearInterval(countdownInterval);
