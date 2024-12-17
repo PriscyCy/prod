@@ -58,8 +58,11 @@ function startTimer() {
             alert("Time's up!");
 
          // **Stop the audio after alert is dismissed**
-            timerAudio.pause(); 
-            timerAudio.currentTime = 0;
+             setTimeout(() => {
+                timerAudio.pause();
+                timerAudio.currentTime = 0;
+            }, 1000); // Wait for 1 second after the alert
+
             return;
         }
         elapsedSeconds++;
