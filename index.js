@@ -31,7 +31,7 @@ populateDropdown(secondDropdown, 59);
 
 // Start the countdown timer
 function startTimer() {
-    // **User interaction unlocks autoplay**
+    // **Force unlock audio autoplay on first user interaction**
     unlockAudioPlayback();
 
     const hours = parseInt(hourDropdown.value) || 0;
@@ -52,10 +52,10 @@ function startTimer() {
         if (elapsedSeconds >= totalTimeInSeconds) {
             clearInterval(countdownInterval);
 
-            // Play the sound and ensure it loops properly
+            // **Play the sound and ensure it loops properly**
             playLoopingAudio();
 
-            // Show the alert (this will block the execution until user clicks OK)
+            // **Show the alert (this will block the execution until user clicks OK)**
             alert("Time's up!");
 
             // **Stop the audio after alert is dismissed**
@@ -71,15 +71,15 @@ function startTimer() {
         const minutesLeft = Math.floor((remainingSeconds % 3600) / 60);
         const secondsLeft = remainingSeconds % 60;
 
-        // Update the display
+        // **Update the display**
         timerText.textContent = `${hoursLeft.toString().padStart(2, '0')}:${minutesLeft.toString().padStart(2, '0')}:${secondsLeft.toString().padStart(2, '0')}`;
 
-        // Update the circle progress
+        // **Update the circle progress**
         updateCircleProgress(remainingSeconds, totalTimeInSeconds);
     }, 1000);
 }
 
-// Force audio to be "unlocked" by the first button click
+// Force audio to be "unlocked" by the first user interaction
 function unlockAudioPlayback() {
     timerAudio.play()
         .then(() => {
@@ -95,7 +95,10 @@ function playLoopingAudio() {
     timerAudio.currentTime = 0;
     timerAudio.play()
         .then(() => console.log("Audio is playing and looping"))
-        .catch((error) => console.error("Audio play failed:", error));
+        .catch((error) => {
+            console.error("Audio play failed. Retrying...", error);
+            setTimeout(() => timerAudio.play(), 1000);
+        });
 }
 
 // Function to stop the audio
