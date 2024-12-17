@@ -50,7 +50,6 @@ function startTimer() {
 
             // Play the sound
             const timerAudio = document.getElementById("timer-audio");
-            timerAudio.loop = true;
             timerAudio.play()
                 .then(() => console.log("Audio is playing"))
                 .catch((error) => console.error("Audio play failed:", error));
