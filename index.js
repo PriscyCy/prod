@@ -31,6 +31,9 @@ populateDropdown(secondDropdown, 59);
 
 // Start the countdown timer
 function startTimer() {
+    // **User interaction unlocks autoplay**
+    unlockAudioPlayback();
+
     const hours = parseInt(hourDropdown.value) || 0;
     const minutes = parseInt(minuteDropdown.value) || 0;
     const seconds = parseInt(secondDropdown.value) || 0;
@@ -76,9 +79,19 @@ function startTimer() {
     }, 1000);
 }
 
+// Force audio to be "unlocked" by the first button click
+function unlockAudioPlayback() {
+    timerAudio.play()
+        .then(() => {
+            console.log("Audio unlocked for future playback");
+            timerAudio.pause();
+            timerAudio.currentTime = 0;
+        })
+        .catch(error => console.log("Autoplay restriction prevented playback", error));
+}
+
 // Function to play and loop the audio
 function playLoopingAudio() {
-    // Forcefully restart the audio and set it to loop
     timerAudio.currentTime = 0;
     timerAudio.play()
         .then(() => console.log("Audio is playing and looping"))
@@ -128,10 +141,8 @@ function resumeTimer() {
         const minutesLeft = Math.floor((remainingSeconds % 3600) / 60);
         const secondsLeft = remainingSeconds % 60;
 
-        // Update the display
         timerText.textContent = `${hoursLeft.toString().padStart(2, '0')}:${minutesLeft.toString().padStart(2, '0')}:${secondsLeft.toString().padStart(2, '0')}`;
 
-        // Update the circle progress
         updateCircleProgress(remainingSeconds, totalTimeInSeconds);
     }, 1000);
 }
