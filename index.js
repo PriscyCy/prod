@@ -31,8 +31,7 @@ populateDropdown(secondDropdown, 59);
 
 // Start the countdown timer
 function startTimer() {
-    // **Force unlock audio autoplay on first user interaction**
-    unlockAudioPlayback();
+    unlockAudioPlayback(); // Unlock autoplay on the first click
 
     const hours = parseInt(hourDropdown.value) || 0;
     const minutes = parseInt(minuteDropdown.value) || 0;
@@ -52,14 +51,12 @@ function startTimer() {
         if (elapsedSeconds >= totalTimeInSeconds) {
             clearInterval(countdownInterval);
 
-            // **Play the sound and ensure it loops properly**
-            playLoopingAudio();
-
-            // **Show the alert (this will block the execution until user clicks OK)**
-            alert("Time's up!");
-
-            // **Stop the audio after alert is dismissed**
-            stopAudio();
+            // **Play the audio BEFORE the alert**
+            playAudioBeforeAlert()
+                .then(() => {
+                    alert("Time's up!");
+                    stopAudio(); // Stop the audio after the alert
+                });
 
             return;
         }
@@ -71,10 +68,10 @@ function startTimer() {
         const minutesLeft = Math.floor((remainingSeconds % 3600) / 60);
         const secondsLeft = remainingSeconds % 60;
 
-        // **Update the display**
+        // Update the display
         timerText.textContent = `${hoursLeft.toString().padStart(2, '0')}:${minutesLeft.toString().padStart(2, '0')}:${secondsLeft.toString().padStart(2, '0')}`;
 
-        // **Update the circle progress**
+        // Update the circle progress
         updateCircleProgress(remainingSeconds, totalTimeInSeconds);
     }, 1000);
 }
@@ -90,21 +87,22 @@ function unlockAudioPlayback() {
         .catch(error => console.log("Autoplay restriction prevented playback", error));
 }
 
-// Function to play and loop the audio
-function playLoopingAudio() {
-    timerAudio.currentTime = 0;
-    timerAudio.play()
-        .then(() => console.log("Audio is playing and looping"))
-        .catch((error) => {
-            console.error("Audio play failed. Retrying...", error);
-            setTimeout(() => timerAudio.play(), 1000);
-        });
+// **Play the audio BEFORE the alert appears**
+async function playAudioBeforeAlert() {
+    try {
+        timerAudio.currentTime = 0; // Ensure it starts from the beginning
+        await timerAudio.play();
+        console.log("Audio is playing before alert");
+    } catch (error) {
+        console.error("Audio play failed. Retrying...", error);
+        setTimeout(() => timerAudio.play(), 1000); // Retry after 1 second
+    }
 }
 
-// Function to stop the audio
+// **Stop the audio after alert is dismissed**
 function stopAudio() {
     timerAudio.pause();
-    timerAudio.currentTime = 0;
+    timerAudio.currentTime = 0; // Reset the audio to the start
 }
 
 // Function to update the circle's progress
@@ -122,18 +120,22 @@ function resumeTimer() {
     if (countdownInterval) clearInterval(countdownInterval); // Clear any existing interval
 
     if (elapsedSeconds >= totalTimeInSeconds) {
-        playLoopingAudio();
-        alert("Time's up!");
-        stopAudio();
+        playAudioBeforeAlert()
+            .then(() => {
+                alert("Time's up!");
+                stopAudio();
+            });
         return;
     }
 
     countdownInterval = setInterval(() => {
         if (elapsedSeconds >= totalTimeInSeconds) {
             clearInterval(countdownInterval);
-            playLoopingAudio();
-            alert("Time's up!");
-            stopAudio();
+            playAudioBeforeAlert()
+                .then(() => {
+                    alert("Time's up!");
+                    stopAudio();
+                });
             return;
         }
 
