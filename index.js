@@ -8,6 +8,7 @@ const resumeButton = document.getElementById('resume');
 const resetButton = document.getElementById('reset');
 const timerText = document.getElementById('timer-text');
 const circle = document.querySelector('.circle');
+const timerAudio = document.getElementById("timer-audio");
 
 let countdownInterval;
 let totalTimeInSeconds = 0;
@@ -49,21 +50,16 @@ function startTimer() {
             clearInterval(countdownInterval);
 
             // Play the sound
-            const timerAudio = document.getElementById("timer-audio");
             timerAudio.play()
                 .then(() => console.log("Audio is playing"))
                 .catch((error) => console.error("Audio play failed:", error));
 
             alert("Time's up!");
 
-         // **Stop the audio after alert is dismissed**
-             setTimeout(() => {
-                timerAudio.pause();
-                timerAudio.currentTime = 0;
-            }, 1000); // Wait for 1 second after the alert
-
+            // Do **NOT** stop or pause the audio so it can continue to loop
             return;
         }
+
         elapsedSeconds++;
         const remainingSeconds = totalTimeInSeconds - elapsedSeconds;
 
@@ -93,19 +89,12 @@ function pauseTimer() {
 function resumeTimer() {
     if (countdownInterval) clearInterval(countdownInterval); // Clear any existing interval
 
-    // Check if the timer has already ended
     if (elapsedSeconds >= totalTimeInSeconds) {
-        const timerAudio = document.getElementById("timer-audio");
-        timerAudio.loop = true; // Set loop for the audio
         timerAudio.play()
             .then(() => console.log("Audio is playing and looping"))
             .catch((error) => console.error("Audio play failed:", error));
 
         alert("Time's up!");
-
-        // Stop the audio after alert is dismissed
-        timerAudio.pause(); 
-        timerAudio.currentTime = 0;
         return;
     }
 
@@ -113,18 +102,11 @@ function resumeTimer() {
         if (elapsedSeconds >= totalTimeInSeconds) {
             clearInterval(countdownInterval);
 
-            const timerAudio = document.getElementById("timer-audio");
-            timerAudio.loop = true; // Set loop with delay
-            console.log("Loop is set to:", timerAudio.loop);
             timerAudio.play()
                 .then(() => console.log("Audio is playing and looping"))
                 .catch((error) => console.error("Audio play failed:", error));
 
             alert("Time's up!");
-
-            // Stop the audio after alert is dismissed
-            timerAudio.pause(); 
-            timerAudio.currentTime = 0;
             return;
         }
 
@@ -142,6 +124,7 @@ function resumeTimer() {
         updateCircleProgress(remainingSeconds, totalTimeInSeconds);
     }, 1000);
 }
+
 // Reset the timer
 function resetTimer() {
     clearInterval(countdownInterval);
